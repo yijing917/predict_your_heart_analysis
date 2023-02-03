@@ -1,0 +1,190 @@
+```{r}
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(RColorBrewer)
+
+```
+
+```{r}
+library(readxl)
+heart_diseases_prediction <- read_excel("heart_diseases_prediction.xlsx")
+View(heart_diseases_prediction)
+```
+
+```{r}
+summary(heart_diseases_prediction)
+```
+
+```{r}
+colnames(heart_diseases_prediction)
+
+str(heart_diseases_prediction)
+```
+```{r}
+n_distinct(heart_diseases_prediction)
+```
+
+```{r}
+clean_names(heart_diseases_prediction)
+heart_diseases <- rename_with(heart_diseases_prediction,tolower)
+
+```
+
+```{r}
+heart_diseases$sex=as.factor(heart_diseases$sex)
+heart_diseases$`chest pain type`=as.factor(heart_diseases$`chest pain type`)
+heart_diseases$`fbs over 120`=as.factor(heart_diseases$`fbs over 120`)
+heart_diseases$`exercise angina`=as.factor(heart_diseases$`exercise angina`)
+heart_diseases$`ekg results`=as.factor(heart_diseases$`ekg results`)
+heart_diseases$`slope of st`=as.factor(heart_diseases$`slope of st`)
+heart_diseases$thallium=as.factor(heart_diseases$thallium)
+```
+
+```{r}
+skim(heart_diseases)
+```
+
+```{r}
+str(heart_diseases)
+```
+
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=sex,fill=`heart disease`))+geom_bar()+
+  geom_text(stat = "count",aes(label=after_stat(count)),vjust=-0.5)+
+  scale_fill_manual(values=c("#6699FF","#CC3300"))+
+   scale_x_discrete(breaks=c("0","1"),labels=c("Female","Male"))+
+  labs(title = "Count of patient with Heart disease VS Gender",x="Gender",y="Count of patient")
+```
+The graph above re
+
+```{r}
+ggplot(heart_diseases,aes(x=age)) + geom_histogram(binwidth=5,fill="black")+labs(title= "Histogram of age distribution")
+```
+Histogram above showed that the age of patients in study group range between 30-77 years old. Most of the patients age between 50-60 years old in the study. 
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=`heart disease`,y=age,fill=`heart disease`))+
+  geom_boxplot()+
+  scale_fill_manual(values=c("#6699FF","#CC3300"))+
+  labs(title="Presence of Heart disease vs Age")
+                                                                
+```
+The boxplot illustrated the age distribution in the study group vs presence of heart diseases. We could conclude that the age distribution of group who has heart disease slightly higher than the other.
+
+```{r}
+heart_diseases %>%
+  ggplot(mapping=aes(x=age,y=cholesterol))+geom_jitter()+geom_smooth(color="blue")
+```
+
+```{r}
+average_st_depression <- heart_diseases %>%
+  group_by(`heart disease`,`ekg results`) %>%
+  summarise(mean_st_depression= mean(`st depression`,.groups='drop'))
+
+average_st_depression
+  
+```
+
+
+```{r}
+average_st_depression %>%
+  ggplot(aes(x=`ekg results`,y=mean_st_depression,fill=`heart disease`))+
+  geom_col(position="dodge")+
+  labs(title = "mean ST depression based on ECG result",x="ECG result")+
+  scale_fill_manual(values=c("#6699FF","#CC3300"))+
+  scale_x_discrete(labels=c("0= normal","1=have ST-T wave abnormalitiy","2=show probable LVH"))
+```
+
+```{r}
+average_bp_cholesterol <- heart_diseases %>%
+  group_by(sex,`heart disease`) %>%
+  summarise(average_bp=mean(bp),average_cholesterol= mean(cholesterol),.groups="drop")
+average_bp_cholesterol
+```
+
+
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=bp,y=cholesterol,color=`heart disease`))+geom_point()+facet_wrap(vars(sex))+
+  labs(title = "Scatterplot of blood pressure and cholesterol vs Gender")+
+  scale_color_manual(values=c("#66CC00","#990000"))
+```
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=`chest pain type`,y=`max hr`,color=`chest pain type`))+
+  geom_boxplot()+
+  theme_classic()+
+  scale_color_discrete(labels=c("1=Asymptomatic","2=Atypical angina","3=Non-anginal pain","4=Typical angina"))+
+  labs(title = "Chest Pain Type vs Max Heart Rate",x="Chest Pain Type", y="Max Heart Rate")
+  
+```
+
+
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=`exercise angina`,y=`max hr`,fill=`exercise angina`))+
+  geom_boxplot()+
+  scale_fill_manual(values = c("#CCCC99","#CC6633"))+
+  scale_x_discrete(breaks=c("0","1"),labels=c("No","Yes"))+
+  scale_color_discrete(labels=c("No","Yes"))+
+  labs(title = "Exercise Angina vs Max Heart Rate",x="Exercise Angina", y="Max Heart Rate")
+                  
+  
+```
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=`chest pain type`,fill=`heart disease`))+geom_bar()+
+  scale_fill_manual(values=c("#6699FF","#CC3300"))+
+  scale_x_discrete(labels=c("1=Asymptomatic","2=Atypical angina","3=Non-anginal pain","4=Typical angina"))+
+  labs(title = "Count of patient vs chest pain type",x="Chest pain type",y="Count of patient")
+  
+```
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=`slope of st`,fill=`heart disease`))+geom_bar()+
+   scale_fill_manual(values=c("#6699FF","#CC3300"))
+```
+```{r}
+heart_diseases %>%
+  ggplot(aes(x=thallium,fill=`ekg results`))+geom_bar()+
+   scale_fill_manual(values=c("#ffcc99","#cc9999","#cccc66"))
+```
+```{r}
+heart_diseases %>%
+  filter(!is.na(sex))%>%
+  ggplot()+
+  geom_bar(aes(x=`exercise angina`,y=`max hr`,fill=`sex`),stat="summary",position="dodge")+
+   scale_fill_manual(values=c("#ffcccc","#99ccff"))+
+  labs(title="Exercise angina vs Max heart rate in Gender",y="Max heartrate")
+  
+```
+
+
+
+```{r}
+heart_diseases %>%
+  filter(!is.na(sex))%>%
+  ggplot()+
+  geom_bar(aes(x=`chest pain type`,y=cholesterol,fill=`heart disease`),stat="summary",position="dodge")+
+   scale_fill_manual(values=c("#6699FF","#CC3300"))+
+  labs(title="Relationship between Chest pain type & cholesterol",y="Serum cholesterol(mg/dL)")+
+  scale_x_discrete(labels=c("1=Asymptomatic","2=Atypical angina","3=Non-anginal pain","4=Typical angina"))
+```
+
+
+```{r}
+heart_diseases %>%
+  filter(!is.na(`heart disease`))%>%
+  ggplot()+
+  geom_bar(aes(x=thallium,y=cholesterol,fill=`heart disease`),stat="summary",position="dodge")+
+  scale_fill_manual(values=c("#6699FF","#CC3300"))+
+  labs(title="Relationship between Thallium test result & cholesterol",x="Thallium test result",y="Serum cholesterol(mg/dL)")+
+  scale_x_discrete(labels=c("3=normal","6=fixed defect","7=reversible defect"))
+```
+
+
+
+
+
