@@ -117,24 +117,25 @@ ST segment is one of the most important features to identify the trend and diffe
 **Findings**
 
 
+![graph_1](https://user-images.githubusercontent.com/123582571/216641663-2f1343de-63fd-4b47-aecb-653112277ef1.png)
 
 
+![histogram_2](https://user-images.githubusercontent.com/123582571/216641675-4fc000de-a5f7-48e8-a525-1362d2aded34.png)
 
 
+![boxplot_3](https://user-images.githubusercontent.com/123582571/216641705-9688cdfe-f67f-43fc-a506-31c0179ad21a.png)
 
 
+![scatterplot_4](https://user-images.githubusercontent.com/123582571/216642300-b82e7c61-1573-469b-91b3-0926a7cb2629.png)
 
 
+![boxplot_5](https://user-images.githubusercontent.com/123582571/216642308-0fbb9a09-3f9f-4417-8c6e-db7e7e944384.png)
 
 
+![bargraph_6](https://user-images.githubusercontent.com/123582571/216642359-4ccf1aca-57bd-4267-918c-4a0968c96e15.png)
 
 
-
-
-
-
-
-
+![bargraph_7](https://user-images.githubusercontent.com/123582571/216642322-ea65356c-74a8-4885-9d58-8f3667586271.png)
 
 
 
